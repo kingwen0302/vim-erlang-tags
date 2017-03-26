@@ -40,11 +40,17 @@ function! VimErlangTags()
         let script_opts = script_opts . " --output " . g:erlang_tags_outfile
     endif
 
-    let script_output = system(s:exec_script . script_opts)
-    if !v:shell_error
-        return 0
+    if has('job')
+        if !exists("g:erlang_tags_job") || job_status(g:erlang_tags_job) != "run"
+            let g:erlang_tags_job = job_start("escript " . s:exec_script . script_opts)
+        endif
     else
-        echoerr "vim-erlang-tag " . script_output
+        let script_output = system("escript " . s:exec_script . script_opts)
+        if !v:shell_error
+            return 0
+        else
+            echoerr "vim-erlang-tag " . script_output
+        endif
     endif
 endfunction
 
