@@ -40,6 +40,10 @@ function! VimErlangTags()
         let script_opts = script_opts . " --output " . g:erlang_tags_outfile
     endif
 
+    if exists("g:erlang_tags_otp") && g:erlang_tags_otp != 0
+        let script_opts = script_opts . " --otp"
+    endif
+
     if has('job')
         if !exists("g:erlang_tags_job") || job_status(g:erlang_tags_job) != "run"
             let g:erlang_tags_job = job_start("escript " . s:exec_script . script_opts)
